@@ -42,14 +42,14 @@ const generateRequest = (event) =>{
 
 bot.on('message',async (event)=>{
     if(event.message.type != 'text')return;
-    
+    if(event.message.text == "/200"){event.reply('200!');return;}
     let aiServerIsRunning = ping('35.221.202.154',8080);
     aiServerIsRunning.then(async (m) =>{
         try {
             let send_Data = {};
-            send_Data.userid = event.source.userId;
-            let userProfile = await lineP.getProfile(send_Data.userid);
-            send_Data.username = userProfile.displayName;
+            send_Data.userid = event.source.userid;
+            //let userProfile = await lineP.getProfile(send_Data.userid);
+            send_Data.username = 'line_anonymous';
             send_Data.request = event.message.text;
             send_Data.groupid = null;
             send_Data.groupname = null;
@@ -71,4 +71,4 @@ bot.on('message',async (event)=>{
 
 
 
-bot.listen('/linebot',80,()=>{console.log('linebot server running ..')});
+bot.listen('/linebot',process.env.PORT || 5000 ,()=>{console.log('linebot server running at 127.0.0.1:5000/linebot ..')});

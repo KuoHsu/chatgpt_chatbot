@@ -11,10 +11,6 @@ const ping = require('node-http-ping');
 const { Configuration, OpenAIApi } = require('openai');
 
 
-/*console.log(db);
-var dbExecutor = new db.dbExecutor(db.dbConfiguration);
-dbExecutor.connect();*/
-
 
 
 

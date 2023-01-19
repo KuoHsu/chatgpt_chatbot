@@ -1,0 +1,15 @@
+{
+  "name": "chatgptai-on-line",
+  "version": "1.0.0",
+  "description": "",
+  "main": "linebot.js",
+  "scripts": {
+    "start": "node linebot.js"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^7.5.2",
+    "http": "^0.0.1-security",
+    "linebot": "^1.6.1",
+    "node-http-ping": "^0.3.1"
+  }
+}
