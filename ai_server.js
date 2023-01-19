@@ -2,27 +2,22 @@ const { Configuration, OpenAIApi } = require('openai');
 const express = require('express');
 const db = require('./connection.js');
 
-console.log(db);
+//chatgpt的api key設定
+const AIconfiguration = new Configuration({
+    apiKey: "<your openai api key>",//chatgpt的api key
+  });
+const openAi = new OpenAIApi(AIconfiguration);
+
+
+
 var dbExecutor = new db.dbExecutor(db.dbConfiguration);
 dbExecutor.connect();
 
 
 
 
-
-
-
-//chatgpt的api key設定
-const AIconfiguration = new Configuration({
-    apiKey: "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",//chatgpt的api key
-  });
-const openAi = new OpenAIApi(AIconfiguration);
-
 const openAIreplyText = async function(qMsg){
-    
     let replyText = "";
-
-
     try {
         const response = await openAi.createCompletion({
             model: "text-davinci-003",
@@ -44,7 +39,6 @@ const openAIreplyText = async function(qMsg){
 
 
 const openAIreplyImg = async function(qMsg){
-    
     let imageUrl = ''
     try {
         let  response = await openAi.createImage({
@@ -66,17 +60,6 @@ var ex_app = express();
 ex_app.use(express.json());
 
 ex_app.post('/line/text', async(req,res)=>{
-    /*req.body
-    {
-        userid: <line-message-api userid>,
-        username: <line-message-api username>,
-        request: <user' question>,
-        from: 'line',
-        groupid:,
-        groupname
-    }
-    
-    */
     console.log(req.body);
     let q = req.body.request;
     let ai_reply = await openAIreplyText(q);
@@ -96,65 +79,30 @@ ex_app.post('/line/text', async(req,res)=>{
 
 
 ex_app.post('/telegram/text', async(req,res)=>{
-    /*req.body
-    {
-        userid: ,
-        userName: ,
-        text: ,
-        from: 'telegram'
-    }
-    
-    */
     console.log(req.body);
     let q = req.body.request;
     let ai_reply = await openAIreplyText(q);
-
- 
     res.send(ai_reply);
-
     let restoreRecord = req.body;
     restoreRecord.response = ai_reply;
     restoreRecord.type = 'text';
-
     console.log(restoreRecord);
-
     let data = new db.dbData(restoreRecord);
     dbExecutor.appendQArecord(data);
-
-
-
     console.log(data);
-
 });
 
 ex_app.post('/telegram/img', async(req,res)=>{
-    /*req.body
-    {
-        userid: <line-message-api userid>,
-        userName: <line-message-api username>,
-        text: <user' question>,
-        from: 'line'
-    }
-    
-    */
     console.log(req.body);
     let q = req.body.request;
     let imgUrl = await openAIreplyImg(q);
-
-
     let restoreRecord = req.body;
     restoreRecord.response = imgUrl;
     restoreRecord.type = 'img';
-
     console.log(restoreRecord);
-
     let data = new db.dbData(restoreRecord);
     dbExecutor.appendQArecord(data);
-
-
     res.send(imgUrl);
-
-
     console.log(data);
 });
 

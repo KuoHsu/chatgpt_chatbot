@@ -6,15 +6,17 @@ const ping = require('node-http-ping');
 
 
 const linebotConfig = {
-    channelId: '1657799814',
-    channelSecret: '29874618a8cccddce7febbedfcaf24bf',
-    channelAccessToken: 'sDJpJEAB83T99UALegbze+zEpfwZRrdM/ZcMm8aPlIGyu0BHxfwQn2iigUFIQwahwGmTFFwMT/0SylB0iytHq0YYFkbBzr8ED9gAj16p0mpboQBcT4dJp2nIXySetO0TsXvc4Rly7Tb7xkdL2B9gHQdB04t89/1O/w1cDnyilFU='
+    channelId: '<channelid>',
+    channelSecret: '<channelSecret>',
+    channelAccessToken: '<channelAccessToken>'
 }
+
+
 var bot = linebot(linebotConfig);
 var lineP = new lineProfile.Client({channelAccessToken:linebotConfig.channelAccessToken});
 
 const req_text__option = {
-    host:'35.221.202.154',
+    host:'127.0.0.1',
     port:8080,
     path:'/line/text',
     method:'POST',
@@ -43,7 +45,7 @@ const generateRequest = (event) =>{
 bot.on('message',async (event)=>{
     if(event.message.type != 'text')return;
     
-    let aiServerIsRunning = ping('35.221.202.154',8080);
+    let aiServerIsRunning = ping('127.0.0.1',8080);
     aiServerIsRunning.then(async (m) =>{
         try {
             let send_Data = {};

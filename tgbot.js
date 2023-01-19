@@ -1,32 +1,12 @@
-const db = require('./connection.js');
-
-
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
-
-
 const ping = require('node-http-ping');
 
 
-const { Configuration, OpenAIApi } = require('openai');
-
-
-
-
-
-//chatgpt的api key設定
-const AIconfiguration = new Configuration({
-    apiKey: "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",//chatgpt的api key
-  });
-  
-  
-  
-  
-  const openAi = new OpenAIApi(AIconfiguration);
   
 //5651291575:AAGKtRApJbdnrsDj0LCwzpEc_FjouD_MYys(測試機)
 //5812256168:AAGswJmRga8LPXF5siPTmrSChHhaXel4qCE //telegramBot的token(智障1號)
-var Tg_token = '5812256168:AAGswJmRga8LPXF5siPTmrSChHhaXel4qCE'; 
+var Tg_token = '<your tlelegram bot token>'; 
 var bot = new TelegramBot(Tg_token, {polling: true});
 var onoff = 1;
 
