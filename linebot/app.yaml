@@ -1,7 +1,0 @@
-runtime: nodejs18
-handlers:
-- url: /linebot
-  script: linebot.js
-
-- url: /
-  script: linebot.js
