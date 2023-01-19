@@ -74,7 +74,7 @@ channelAccessToken: 'sDJpJEAB83T99UALegbze+zEpfwZRrdM/ZcMm8aPlIGyu0BHxfwQn2iigUF
 
 
 
-openai_chatgpt
+openai_chatgpt (ai_server.js)
 api key(codekuo711): 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
 api key(pk9987581): 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
 
