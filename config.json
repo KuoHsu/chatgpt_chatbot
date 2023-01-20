@@ -17,6 +17,7 @@
         "port":8080
     },
     "database":{
+        "using":"<if you want to records user's question, set 'Y', if not, set 'N'>",
         "host":"<your database host, if you run the database on localhost, then setting 127.0.0.1>",
         "port":3306,
         "user":"<database user>",
