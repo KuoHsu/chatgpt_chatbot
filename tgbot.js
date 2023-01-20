@@ -1,12 +1,13 @@
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const ping = require('node-http-ping');
+const fs = require('fs');
 
-
+const config = JSON.parse(fs.readFileSync('./config.json'));
   
 //5651291575:AAGKtRApJbdnrsDj0LCwzpEc_FjouD_MYys(測試機)
 //5812256168:AAGswJmRga8LPXF5siPTmrSChHhaXel4qCE //telegramBot的token(智障1號)
-var Tg_token = '<your tlelegram bot token>'; 
+var Tg_token = config.telegrambot.token; 
 var bot = new TelegramBot(Tg_token, {polling: true});
 var onoff = 1;
 
@@ -15,7 +16,7 @@ var onoff = 1;
 
 
 const aiserver_req_config = {
-    baseURL:'http://127.0.0.1:8080',
+    baseURL:'http://' + config.chatgptServices.host + ':' + config.chatgptServices.port,
     responseType:'text',
     contentType:'application/json'
 }
@@ -31,7 +32,7 @@ const tgBotReplyText = async (msg,match) => {
     bot.sendChatAction(chatId,'typing');
 
 
-    let aiServerIsRunning = ping('127.0.0.1',8080);
+    let aiServerIsRunning = ping(config.chatgptServices.host,config.chatgptServices.port);
     aiServerIsRunning.then(async (m) =>{
         try {
             let send_Data = {};
@@ -69,7 +70,7 @@ const tgBotReplyImage = async (msg, match) => {
     bot.sendChatAction(chatId,'upload_photo');
 
 
-    let aiServerIsRunning = ping('127.0.0.1',8080);
+    let aiServerIsRunning = ping(config.chatgptServices.host,config.chatgptServices.port);
     aiServerIsRunning.then(async (m) =>{
         try {
             let send_Data = {};

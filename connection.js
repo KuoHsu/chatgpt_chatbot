@@ -129,17 +129,6 @@ class dbExecutor {
     }
 };
 
-
-
-const dbConfiguration = {
-    host: '127.0.0.1',
-    port: '3306',
-    user: 'root',
-    password: 'mar987@1234',
-    database: 'botdb',
-    connectionLimit: 5,
-    character: 'utf8mb4'
-}
-module.exports = { dbConfiguration: dbConfiguration, dbExecutor: dbExecutor, dbData: dbData };
+module.exports = {dbExecutor: dbExecutor, dbData: dbData };
 
 

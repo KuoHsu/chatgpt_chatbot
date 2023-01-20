@@ -1,16 +1,23 @@
 const { Configuration, OpenAIApi } = require('openai');
 const express = require('express');
 const db = require('./connection.js');
+const fs = require('fs');
+
+
+const config = JSON.parse(fs.readFileSync('./config.json'));
+console.log(config);
+
+
 
 //chatgpt的api key設定
 const AIconfiguration = new Configuration({
-    apiKey: "<your openai api key>",//chatgpt的api key
+    apiKey: config.openai.apiKey,//chatgpt的api key
   });
 const openAi = new OpenAIApi(AIconfiguration);
 
 
 
-var dbExecutor = new db.dbExecutor(db.dbConfiguration);
+var dbExecutor = new db.dbExecutor(config.database);
 dbExecutor.connect();
 
 
@@ -51,7 +58,6 @@ const openAIreplyImg = async function(qMsg){
         imageUrl = 'error';
     }
     
-    console.log(imageUrl);
     return imageUrl;
 
 };
@@ -63,17 +69,16 @@ ex_app.post('/line/text', async(req,res)=>{
     console.log(req.body);
     let q = req.body.request;
     let ai_reply = await openAIreplyText(q);
+    res.send(ai_reply);
 
+    
+    
     let restoreRecord = req.body;
     restoreRecord.response = ai_reply;
     restoreRecord.type = 'text';
-
-    console.log(restoreRecord);
-
     let data = new db.dbData(restoreRecord);
     dbExecutor.appendQArecord(data);
 
-    res.send(ai_reply);
 
 });
 
@@ -83,27 +88,28 @@ ex_app.post('/telegram/text', async(req,res)=>{
     let q = req.body.request;
     let ai_reply = await openAIreplyText(q);
     res.send(ai_reply);
+
+
     let restoreRecord = req.body;
     restoreRecord.response = ai_reply;
     restoreRecord.type = 'text';
-    console.log(restoreRecord);
     let data = new db.dbData(restoreRecord);
     dbExecutor.appendQArecord(data);
-    console.log(data);
+
 });
 
 ex_app.post('/telegram/img', async(req,res)=>{
     console.log(req.body);
     let q = req.body.request;
     let imgUrl = await openAIreplyImg(q);
+    res.send(imgUrl);
+
+
     let restoreRecord = req.body;
     restoreRecord.response = imgUrl;
     restoreRecord.type = 'img';
-    console.log(restoreRecord);
     let data = new db.dbData(restoreRecord);
     dbExecutor.appendQArecord(data);
-    res.send(imgUrl);
-    console.log(data);
 });
 
-ex_app.listen(8080,()=>{console.log('ai_server running at 127.0.0.1:8080..')});
+ex_app.listen(config.chatgptServices.port,()=>{console.log('ai_server running at' + process.env.port)});
