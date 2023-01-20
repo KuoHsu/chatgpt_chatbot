@@ -48,6 +48,21 @@ CREATE TABLE `q_type` (
 
 
 --
+-- Table structure for table `user_info`
+--
+
+DROP TABLE IF EXISTS `user_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_info` (
+  `user_index` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(50) NOT NULL,
+  `from` varchar(14) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  PRIMARY KEY (`user_index`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Table structure for table `qa_info`
 --
 
@@ -66,27 +81,12 @@ CREATE TABLE `qa_info` (
   KEY `FK_qa_info_group_info` (`group_index`),
   KEY `FK_qa_info_user_info` (`user_index`),
   KEY `qa_info_ibfk_3` (`type`),
-  CONSTRAINT `FK_qa_info_group_info` FOREIGN KEY (`group_index`) REFERENCES `group_info` (`group_index`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_qa_info_user_info` FOREIGN KEY (`user_index`) REFERENCES `user_info` (`user_index`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `qa_info_ibfk_3` FOREIGN KEY (`type`) REFERENCES `q_type` (`type_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 
---
--- Table structure for table `user_info`
---
 
-DROP TABLE IF EXISTS `user_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_info` (
-  `user_index` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(50) NOT NULL,
-  `from` varchar(14) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  PRIMARY KEY (`user_index`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
