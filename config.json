@@ -1,26 +1,26 @@
 {
     "linebot":{
-        "URLpath":"/linebot",
+        "URLpath":"<your line-bot webhook URL path>",
         "port":5000,
-        "channelId":"1657799814",
-        "channelSecret":"29874618a8cccddce7febbedfcaf24bf",
-        "channelAccessToken":"sDJpJEAB83T99UALegbze+zEpfwZRrdM/ZcMm8aPlIGyu0BHxfwQn2iigUFIQwahwGmTFFwMT/0SylB0iytHq0YYFkbBzr8ED9gAj16p0mpboQBcT4dJp2nIXySetO0TsXvc4Rly7Tb7xkdL2B9gHQdB04t89/1O/w1cDnyilFU="
+        "channelId":"<your line-bot channelId>",
+        "channelSecret":"<your line-bot channelSecret>",
+        "channelAccessToken":"<your lint-bot channelAccessToken>"
     },
     "telegrambot":{
-        "token":"5651291575:AAGKtRApJbdnrsDj0LCwzpEc_FjouD_MYys"
+        "token":"<your telegrambot token>"
     },
     "openai":{
-        "apiKey":"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"
+        "apiKey":"<your openai api-key>"
     },
     "chatgptServices":{
-        "host":"35.221.202.154",
+        "host":"<your chatgpt server host, if you run the server on localhost, then setting 127.0.0.1>",
         "port":8080
     },
     "database":{
-        "host":"35.221.202.154",
+        "host":"<your database host, if you run the database on localhost, then setting 127.0.0.1>",
         "port":3306,
-        "user":"root",
-        "password":"mar987@1234",
+        "user":"<database user>",
+        "password":"<database password>",
         "database":"botdb",
         "connectionLimit":5,
         "character":"utf8mb4"
