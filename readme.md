@@ -24,7 +24,7 @@ To build the telegram-bot, see [https://learn.microsoft.com/en-us/azure/bot-serv
 
 #### **Setting configuration**
 
-Before using, check config.json is setting, this file include telegram-bot's token, line-bot's setting, and other setting, so don't forget.
+Before using, check [config.json](./config.json) is setting, this file include telegram-bot's token, line-bot's setting, and other setting, so don't forget.
 If you don't want to record user's chatrecord, just setting option 'database.using' to 'N' in this file.
 
 ---
@@ -33,7 +33,7 @@ If you don't want to record user's chatrecord, just setting option 'database.usi
 
 **Run chatGPT chatbot**
 
-This server is the router between bot and chatGPT, and this server include record features.
+This server is the router between bot and chatGPT, and this server include record features.<br>
 command: `node ai_server.js`
 
 **Run telegram-bot services**
