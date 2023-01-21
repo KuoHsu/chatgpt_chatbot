@@ -22,6 +22,17 @@ const aiserver_req_config = {
     contentType:'application/json'
 }
 
+const getSendData = (event) =>{
+    let data = {};
+    data.userid = event.source.userId;
+    data.username = 'line_anonymous';
+    data.request = event.message.text;
+    data.groupid = null;
+    data.groupname = null;
+    data.from = 'line';
+    return data;
+}
+
 
 bot.on('message',async (event)=>{
     if(event.message.type != 'text')return;
@@ -29,14 +40,8 @@ bot.on('message',async (event)=>{
     let aiServerIsRunning = ping(config.chatgptServices.host,config.chatgptServices.port);
     aiServerIsRunning.then(async (m) =>{
         try {
-            let send_Data = {};
-            send_Data.userid = event.source.userId;
-            send_Data.username = 'line_anonymous';
-            send_Data.request = event.message.text;
-            send_Data.groupid = null;
-            send_Data.groupname = null;
-            send_Data.from = 'line';
-
+            
+            let send_Data = getSendData(event);
             let aiReply = await axios.post('/line/text',send_Data,aiserver_req_config);
             let aiReplyText = aiReply.data;
             event.reply(aiReplyText);
