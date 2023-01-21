@@ -3,22 +3,50 @@ const mariadb = require('mariadb');
 
 class dbData {
 
-    constructor(data) {
-        this.user_id = data.userid;
-        this.user_name = data.username;
-        this.group_id = data.groupid;
-        this.group_name = data.groupname;
-        this.request = data.request;
-        this.response = data.response;
+    constructor() {
+        this.from = 'none';
+        this.user_id = '0';
+        this.user_name = 'no-user';
+        this.group_id = null;
+        this.group_name = null;
+        this.request = 'none';
+        this.response = 'none';
         this.type = 0;
-        if (data.type == 'text') {
+    }
+    setUserFrom = (from) =>{
+        this.from = from;
+    }
+
+    setUserId = (userId) =>{
+        this.user_id = userId;
+    }
+
+    setUserName = (userName) =>{
+        this.user_name = userName;
+    }
+    setGroupId = (groupId) =>{
+        this.group_id = groupId;
+    }
+    setGroupName = (groupName) =>{
+        this.group_name = groupName;
+    }
+    setRequest = (request) =>{
+        this.request = request;
+    }
+    setResponse = (response) =>{
+        this.response = response;
+    }
+    setType = (type) =>{
+        if (type == 'text') {
             this.type = 1;
-        } else if (data.type == 'img') {
+        } else if (type == 'img') {
             this.type = 2;
         }
-        this.isGroup = data.groupid != null ? true:false;
-        this.from = data.from;
     }
+    isGroup = () =>{
+        return this.group_id != null ? true : false;
+    }
+    
 }
 
 
@@ -46,46 +74,51 @@ class dbExecutor {
     };
 
     connectIsExist = async () =>{
-        if (!this.conn){
-            await this.connect();
-        }
+        return this.conn.isValid();
     }
 
     appendQArecord = async (data) => {
 
-        this.connectIsExist();
-        let userIndex = await this.getUserIndex(data.user_id,data.from);
-        let userIsExistFlag = userIndex == null ? false:true;
-        let groupIsExistFlag = true;
-        let groupIndex = null;
-
-        if (!userIsExistFlag) {
-            userIsExistFlag = await this.appendUser(data.user_id,data.user_name,data.from);
-            userIndex = await this.getUserIndex(data.user_id,data.from);
-        }
-
-        if(data.isGroup){
-            groupIsExistFlag = false;
-            groupIndex = await this.getUserIndex(data.group_id,data.from);
-            groupIsExistFlag = groupIndex == null? false:true;
-            if(!groupIsExistFlag){
-                groupIsExistFlag = await this.appendGroup(data.group_id,data.group_name,data.from);
+        try {
+            if (!this.connectIsExist()){
+                await this.connect();
+            }
+            let insertSuccess = false;
+            let userIndex = await this.getUserIndex(data.user_id,data.from);
+            let userIsExistFlag = userIndex == null ? false:true;
+            let groupIndex = null;
+            
+    
+            if (!userIsExistFlag) {
+                userIsExistFlag = await this.appendUser(data.user_id,data.user_name,data.from);
+                userIndex = await this.getUserIndex(data.user_id,data.from);
+            }
+    
+            if(data.isGroup()){
+                let groupIsExistFlag = false;
                 groupIndex = await this.getUserIndex(data.group_id,data.from);
+                groupIsExistFlag = groupIndex == undefined ? false:true;
+                if(!groupIsExistFlag){
+                    groupIsExistFlag = await this.appendGroup(data.group_id,data.group_name,data.from);
+                    groupIndex = await this.getUserIndex(data.group_id,data.from);
+                }
+    
+            }
+    
+            if(userIsExistFlag && groupIsExistFlag){
+                let date = this.getDateTime();
+                let inserData = [userIndex, groupIndex, data.request, data.response, date, data.type];
+                let QArecordAppendQuery = await this.conn.query('INSERT INTO qa_info (user_index,group_index,request,response,datetime,type) VALUES (?,?,?,?,?,?)',inserData);
+                if(QArecordAppendQuery.warningStatus == 0){
+                    insertSuccess = true;
+                }
             }
 
+            return insertSuccess;
+        } catch (error) {
+            console.error(error);
         }
-
-        if(userIsExistFlag && groupIsExistFlag){
-            let date = this.getDateTime();
-            let inserData = [userIndex, groupIndex, data.request, data.response, date, data.type];
-            let QArecordAppendQuery = await this.conn.query('INSERT INTO qa_info (user_index,group_index,request,response,datetime,type) VALUES (?,?,?,?,?,?)',inserData);
-            if(QArecordAppendQuery.warningStatus == 0){
-                console.log('qa insert sucess.');
-            }else{
-                console.log('qa insert defeat.');
-
-            }
-        }
+        
         
     }
 
@@ -99,7 +132,6 @@ class dbExecutor {
     appendUser = async (user_id, user_name, from) => {
         let userAppendQuery = await this.conn.query('INSERT INTO user_info (user_id, `from`, username) VALUES (?,?,?)',[user_id,from,user_name]);
         let ok = userAppendQuery.warningStatus == 0;
-        console.log('add user ' + ok);
         return ok;
     }
 
@@ -111,7 +143,6 @@ class dbExecutor {
     appendGroup = async (group_id, group_name, from) => {
         let groupAppendQuery = await this.conn.query('INSERT INTO group_info (group_id, `from`, group_name) VALUES (?,?,?)',[group_id,from,group_name]);
         let ok = groupAppendQuery.warningStatus == 0;
-        console.log('add group ' + ok);
         return ok;
     }
 

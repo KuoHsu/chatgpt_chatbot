@@ -2,6 +2,8 @@ const { Configuration, OpenAIApi } = require('openai');
 const express = require('express');
 const db = require('./connection.js');
 const fs = require('fs');
+const { response } = require('express');
+const { type } = require('os');
 
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
@@ -16,10 +18,11 @@ const openAi = new OpenAIApi(AIconfiguration);
 var dbExecutor  = null;
 
 
-const connectToDB = () =>{
+const connectToDB = async() =>{
     if(config.database.using == "Y"){
         dbExecutor = new db.dbExecutor(config.database);
-        dbExecutor.connect();
+        let isConnect = await dbExecutor.connect();
+        return isConnect;
     }
 }
 
@@ -69,6 +72,24 @@ const openAIreplyImg = async function(qMsg){
 
 };
 
+const appendQArecord = (data) =>{
+    if(config.database.using == 'Y'){
+        dbExecutor.appendQArecord(data);
+    }
+}
+
+const getDBformatData = (reqBody,response,type) =>{
+    let data = new db.dbData();
+    data.setUserFrom(reqBody.from);
+    data.setUserId(reqBody.userid);
+    data.setUserName(reqBody.username);
+    data.setGroupId(reqBody.groupid);
+    data.setGroupName(reqBody.groupname);
+    data.setRequest(reqBody.request);
+    data.setResponse(response);
+    data.setType(type);
+    return data;
+}
 
 
 
@@ -80,17 +101,8 @@ ex_app.post('/line/text', async(req,res)=>{
     let ai_reply = await openAIreplyText(q);
     res.send(ai_reply);
 
-    
-    if(config.database.using == 'Y'){
-        let restoreRecord = req.body;
-        restoreRecord.response = ai_reply;
-        restoreRecord.type = 'text';
-        let data = new db.dbData(restoreRecord);
-        dbExecutor.appendQArecord(data);
-    }
-   
-
-
+    let data = getDBformatData(req,ai_reply,'text');
+    appendQArecord(data);
 });
 
 
@@ -100,13 +112,8 @@ ex_app.post('/telegram/text', async(req,res)=>{
     res.send(ai_reply);
 
 
-    if(config.database.using == 'Y'){
-        let restoreRecord = req.body;
-        restoreRecord.response = ai_reply;
-        restoreRecord.type = 'text';
-        let data = new db.dbData(restoreRecord);
-        dbExecutor.appendQArecord(data);
-    }
+    let data = getDBformatData(req,ai_reply,'text');
+    appendQArecord(data);
 
 });
 
@@ -117,14 +124,9 @@ ex_app.post('/telegram/img', async(req,res)=>{
     res.send(imgUrl);
 
 
-    if(config.database.using == 'Y'){
-        let restoreRecord = req.body;
-        restoreRecord.response = ai_reply;
-        restoreRecord.type = 'img';
-        let data = new db.dbData(restoreRecord);
-        dbExecutor.appendQArecord(data);
-    }
+    let data = getDBformatData(req,imgUrl,'img');
+    appendQArecord(data);
 });
 
+console.log(connectToDB() == true ? 'connect db success':'connect db fail');
 ex_app.listen(config.chatgptServices.port,()=>{console.log('ai_server running..')});
-connectToDB();
