@@ -47,7 +47,7 @@ bot.on('message',async (event)=>{
             console.error(error);
         }
     },()=>{
-        event.reply("--[維護中，暫時無法互動。]--");
+        event.reply("Can\'t find chatGPT server.");
     });
     
 });

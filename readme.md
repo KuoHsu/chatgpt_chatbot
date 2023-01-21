@@ -1,38 +1,45 @@
-環境配置:
-運行環境: nodeJS v18.12.1
-資料庫環境: mariaDB Ver 15.1 Distrib 10.10.2-MariaDB
+# ChatGPT chatbot on telegram and line
 
-安裝node
-...
+This program is the bot that can provide user chat with chatGPT-ai on telegram and line, and also can provide owner record user's chatrecord (this features is optional).
 
-安裝npm
-...
+---
 
-安裝依賴的套件
-npm install
+#### **Runtime environment**
 
 
-安裝mariaDB
-...
+| services                     | Runtime | version  |
+| ------------------------------ | --------- | ---------- |
+| chatGPT services and chatbot | nodeJS  | v18.12.1 |
+| database                     | mariaDB | v10.10.2 |
 
-建立資料庫
-...
+---
 
-設定設置檔(config.json)
-...
+#### **Building bot**
 
+To build the line-bot, see [https://developers.line.biz/en/docs/messaging-api/building-bot/#set-up-bot-on-line-developers-console](https://)
 
-運行chatGPT server
-node ai_server.js
+To build the telegram-bot, see [https://learn.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-telegram?view=azure-bot-service-4.0](https://)
 
+---
 
-運行telegram-bot
-node tgbot.js
+#### **Setting configuration**
 
+Before using, check config.json is setting, this file include telegram-bot's token, line-bot's setting, and other setting, so don't forget.
+If you don't want to record user's chatrecord, just setting option 'database.using' to 'N' in this file.
 
-運行line-bot
-node linebot.js
+---
 
+#### **Running services**
 
-全部一次運行
-npm start
+**Run chatGPT chatbot**
+
+This server is the router between bot and chatGPT, and this server include record features.
+command: `node ai_server.js`
+
+**Run telegram-bot services**
+
+command: `node tgbot.js`
+
+**Run line-bot services**
+
+command: `node linebot.js`

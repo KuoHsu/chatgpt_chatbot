@@ -52,7 +52,7 @@ const tgBotReplyText = async (msg,match) => {
             console.error(error);
         }
     },()=>{
-        bot.sendMessage(chatId, '--[維護中，暫時無法互動。]--',{reply_to_message_id:messageId});
+        bot.sendMessage(chatId, 'Can\'t find chatGPT server.',{reply_to_message_id:messageId});
     });
 
 
@@ -86,7 +86,7 @@ const tgBotReplyImage = async (msg, match) => {
             let ai_reply = await axios.post('/telegram/img',send_Data,aiserver_req_config);
             let imgURL = ai_reply.data;
             if(imgURL== 'error'){
-                bot.sendMessage(chatId,"窩不知道你在講什麼。",{reply_to_message_id:messageId});
+                bot.sendMessage(chatId,"chatGPT error",{reply_to_message_id:messageId});
             }else{
                 let imgData = await axios.get(imgURL,{responseType:'arraybuffer'});
                 let img = Buffer.from(imgData.data,'binary');
@@ -98,7 +98,7 @@ const tgBotReplyImage = async (msg, match) => {
             console.error(error);
         }
     },()=>{
-        bot.sendMessage(chatId, '--[維護中，暫時無法互動。]--',{reply_to_message_id:messageId});
+        bot.sendMessage(chatId, 'Can\'t find chatGPT server.',{reply_to_message_id:messageId});
     });
 
 }
@@ -108,34 +108,9 @@ const tgBotReplyImage = async (msg, match) => {
 
 
 
-bot.onText(/\@chatgpt_test01_bot (.+)/,tgBotReplyText);
- 
 bot.onText(/\/gpt (.+)/,tgBotReplyText);
 
 bot.onText(/\/img (.+)/,tgBotReplyImage);
 
-bot.onText(/\/on/,(msg)=>{
-    onoff = 1;
-    var chatId = msg.chat.id; 
-    bot.sendMessage(chatId, '好喔，現在我可以講話了。'); 
-});
 
-bot.onText(/\/off/,(msg)=>{
-    onoff = 0;
-    var chatId = msg.chat.id; 
-    bot.sendMessage(chatId, '好喔，我閉嘴。');
-});
-
-bot.onText(/\/list/,(msg)=>{
-    var chatId = msg.chat.id; 
-    var cmdList = 'gpt - 跟chatGPT講話\non - 讓機器人可以講話\noff - 讓機器人閉嘴\nlist - 條列出所有可用的指令';
-    bot.sendMessage(chatId, cmdList);
-});
-
-bot.onText(/\/test/,(msg)=>{
-    var chatId = msg.chat.id; 
-    var reply = '200';
-    bot.sendMessage(chatId, reply);
-});
-
-console.log('Process running');
+console.log('telegram-bot running');
