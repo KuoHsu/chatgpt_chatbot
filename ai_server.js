@@ -1,9 +1,7 @@
 const { Configuration, OpenAIApi } = require('openai');
 const express = require('express');
-const db = require('./connection.js');
+const db = require('./dbexecute.js');
 const fs = require('fs');
-const { response } = require('express');
-const { type } = require('os');
 
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
