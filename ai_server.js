@@ -72,9 +72,10 @@ const openAIreplyImg = async function(qMsg){
 
 };
 
-const appendQArecord = (data) =>{
+const appendQArecord = async(data) =>{
     if(config.database.using == 'Y'){
-        dbExecutor.appendQArecord(data);
+       let appendSuccess = await dbExecutor.appendQArecord(data);
+       console.log(appendSuccess == true? 'appendRecordSuccess': 'appendRecordFail');
     }
 }
 

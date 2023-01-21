@@ -5,15 +5,8 @@ const fs = require('fs');
 
 const config = JSON.parse(fs.readFileSync('./config.json'));
   
-//5651291575:AAGKtRApJbdnrsDj0LCwzpEc_FjouD_MYys(測試機)
-//5812256168:AAGswJmRga8LPXF5siPTmrSChHhaXel4qCE //telegramBot的token(智障1號)
 var Tg_token = config.telegrambot.token; 
 var bot = new TelegramBot(Tg_token, {polling: true});
-var onoff = 1;
-
-
-
-
 
 const aiserver_req_config = {
     baseURL:'http://' + config.chatgptServices.host + ':' + config.chatgptServices.port,
@@ -21,13 +14,22 @@ const aiserver_req_config = {
     contentType:'application/json'
 }
 
+const getSendData = (msg,request) =>{
+    let data = {};
+    data.userid = msg.from.id;
+    data.username = 'telegram_anonymous';//msg.from.username;
+    data.request = request;
+    data.groupid = msg.chat.type == 'group' ? msg.chat.id : null;
+    data.groupname = msg.chat.type == 'group' ? msg.chat.title : null;
+    data.from = 'telegram';
+    return data;
+}
 
 const tgBotReplyText = async (msg,match) => {
-    if(onoff == 0)return;
     
     let chatId = msg.chat.id; 
     let messageId = msg.message_id;
-    let q = match[1];
+    let send_Data = getSendData(msg,match[1]);
 
     bot.sendChatAction(chatId,'typing');
 
@@ -35,13 +37,6 @@ const tgBotReplyText = async (msg,match) => {
     let aiServerIsRunning = ping(config.chatgptServices.host,config.chatgptServices.port);
     aiServerIsRunning.then(async (m) =>{
         try {
-            let send_Data = {};
-            send_Data.userid = msg.from.id;
-            send_Data.username = 'telegram_anonymous';//msg.from.username;
-            send_Data.request = q;
-            send_Data.groupid = msg.chat.type == 'group' ? msg.chat.id : null;
-            send_Data.groupname = msg.chat.type == 'group' ? msg.chat.title : null;
-            send_Data.from = 'telegram';
             send_Data.type = 'text';
 
             let aiReply = await axios.post('/telegram/text',send_Data,aiserver_req_config);
@@ -61,11 +56,10 @@ const tgBotReplyText = async (msg,match) => {
 }
 
 const tgBotReplyImage = async (msg, match) => {
-    if (onoff == 0)return;
 
     let chatId = msg.chat.id; 
     let messageId = msg.message_id;
-    let imgprop = match[1];
+    let send_Data = getSendData(msg,match[1]);
 
     bot.sendChatAction(chatId,'upload_photo');
 
@@ -73,14 +67,6 @@ const tgBotReplyImage = async (msg, match) => {
     let aiServerIsRunning = ping(config.chatgptServices.host,config.chatgptServices.port);
     aiServerIsRunning.then(async (m) =>{
         try {
-            let send_Data = {};
-            send_Data.userid = msg.from.id;
-            send_Data.username = msg.from.username;
-            send_Data.request = imgprop;
-            send_Data.groupid = msg.chat.type == 'group' ? msg.chat.id : null;
-            send_Data.groupname = msg.chat.type == 'group' ? msg.chat.title : null;
-
-            send_Data.from = 'telegram';
             send_Data.type = 'img';
 
             let ai_reply = await axios.post('/telegram/img',send_Data,aiserver_req_config);
