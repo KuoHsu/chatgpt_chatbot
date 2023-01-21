@@ -62,7 +62,7 @@ class dbExecutor {
         
         try {
             this.conn = await this.connectionPool.getConnection();
-            if (this.conn) {
+            if (this.conn.isValid()) {
                 return true;
             } else {
                 return false;
