@@ -100,7 +100,7 @@ ex_app.post('/line/text', async(req,res)=>{
     let ai_reply = await openAIreplyText(q);
     res.send(ai_reply);
 
-    let data = getDBformatData(req,ai_reply,'text');
+    let data = getDBformatData(req.body,ai_reply,'text');
     appendQArecord(data);
 });
 
@@ -111,21 +111,20 @@ ex_app.post('/telegram/text', async(req,res)=>{
     res.send(ai_reply);
 
 
-    let data = getDBformatData(req,ai_reply,'text');
+    let data = getDBformatData(req.body,ai_reply,'text');
     appendQArecord(data);
 
 });
 
 ex_app.post('/telegram/img', async(req,res)=>{
-    console.log(req.body);
     let q = req.body.request;
     let imgUrl = await openAIreplyImg(q);
     res.send(imgUrl);
 
 
-    let data = getDBformatData(req,imgUrl,'img');
+    let data = getDBformatData(req.body,imgUrl,'img');
     appendQArecord(data);
 });
 
-console.log(connectToDB() == true ? 'connect db success':'connect db fail');
+connectToDB().then((f) => {f == true ? console.log('connect db success') : console.log('connect db fail')});
 ex_app.listen(config.chatgptServices.port,()=>{console.log('ai_server running..')});

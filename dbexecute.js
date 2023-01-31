@@ -1,5 +1,5 @@
 const mariadb = require('mariadb');
-
+const hash = require('js-sha256').sha256;
 
 class dbData {
 
@@ -105,15 +105,11 @@ class dbExecutor {
     
             }
     
-            if(userIsExistFlag && groupIsExistFlag){
-                let date = this.getDateTime();
-                let inserData = [userIndex, groupIndex, data.request, data.response, date, data.type];
-                let QArecordAppendQuery = await this.conn.query('INSERT INTO qa_info (user_index,group_index,request,response,datetime,type) VALUES (?,?,?,?,?,?)',inserData);
-                if(QArecordAppendQuery.warningStatus == 0){
-                    insertSuccess = true;
-                }
-            }
-
+            
+            let date = this.getDateTime();
+            let inserData = [userIndex, groupIndex, data.request, data.response, date, data.type];
+            let QArecordAppendQuery = await this.conn.query('INSERT INTO qa_info (user_index,group_index,request,response,datetime,type) VALUES (?,?,?,?,?,?)',inserData);
+            if(QArecordAppendQuery.warningStatus == 0)insertSuccess = true
             return insertSuccess;
         } catch (error) {
             console.error(error);
@@ -124,13 +120,15 @@ class dbExecutor {
 
 
     getUserIndex = async (user_id, from) => {
-        let query = await this.conn.query('SELECT u.user_index as uindex FROM user_info u WHERE u.user_id = ? AND u.`from` = ?', [user_id,from]);
+        let userIdSHA256 = hash(user_id);
+        let query = await this.conn.query('SELECT u.user_index as uindex FROM user_info u WHERE u.user_id = ? AND u.`from` = ?', [userIdSHA256,from]);
         return query[0] == null ? null : query[0].uindex;
 
     }
 
     appendUser = async (user_id, user_name, from) => {
-        let userAppendQuery = await this.conn.query('INSERT INTO user_info (user_id, `from`, username) VALUES (?,?,?)',[user_id,from,user_name]);
+        let userIdSHA256 = hash(user_id);
+        let userAppendQuery = await this.conn.query('INSERT INTO user_info (user_id, `from`, username) VALUES (?,?,?)',[userIdSHA256,from,user_name]);
         let ok = userAppendQuery.warningStatus == 0;
         return ok;
     }
@@ -158,6 +156,22 @@ class dbExecutor {
         let ds = Y + '-' + M + '-' + D + ' ' + h + ':' + m +':' + s;
         return ds;
     }
+
+    /*updateUserIdIntoSHA256 = async(user_id,sha256) => {
+        let query = await this.conn.query('UPDATE user_info SET user_id = ? WHERE user_id = ?',[sha256,user_id]);
+        let ok = query.warningStatus == 0;
+        console.log(ok);
+    }
+
+    getAllUserId = async () =>{
+        let query = await this.conn.query('SELECT user_id from user_info');
+        console.log(query);
+        let returnData = [];
+        for(let i = 0; i< query.length; i++){
+            returnData.push(query[i].user_id);
+        }
+        return returnData;
+    }*/
 };
 
 module.exports = {dbExecutor: dbExecutor, dbData: dbData };
