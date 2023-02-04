@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS `user_info`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_info` (
   `user_index` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(50) NOT NULL,
+  `user_id` char(64) NOT NULL,
   `from` varchar(14) NOT NULL,
   `username` varchar(50) NOT NULL,
   PRIMARY KEY (`user_index`) USING BTREE
