@@ -73,7 +73,7 @@ class dbExecutor {
 
     };
 
-    connectIsExist = async () =>{
+    connectIsExist = () =>{
         return this.conn.isValid();
     }
 
