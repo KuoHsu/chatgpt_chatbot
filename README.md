@@ -24,8 +24,7 @@ To build the telegram-bot, see [https://learn.microsoft.com/en-us/azure/bot-serv
 
 #### **Set configuration**
 
-Before using, check [config.json](./config.json) is setting, this file include telegram-bot's token, line-bot's setting, and other setting, so don't forget.
-If you don't want to record user's chatrecord, just setting option 'database.using' to 'N' in this file.
+Before using, check [config.json](./config.json) is setting, this file include telegram-bot's token, line-bot's setting, and other setting. If you don't want to record user's chatrecord, set option 'database.using' to 'N' in this file.
 
 ---
 
