@@ -14,7 +14,7 @@ This program is the bot that can provide user chat with chatGPT-ai on telegram a
 
 ---
 
-#### **Building bot**
+#### **Build bot**
 
 To build the line-bot, see [https://developers.line.biz/en/docs/messaging-api/building-bot/#set-up-bot-on-line-developers-console](https://)
 
@@ -22,14 +22,14 @@ To build the telegram-bot, see [https://learn.microsoft.com/en-us/azure/bot-serv
 
 ---
 
-#### **Setting configuration**
+#### **Set configuration**
 
 Before using, check [config.json](./config.json) is setting, this file include telegram-bot's token, line-bot's setting, and other setting, so don't forget.
 If you don't want to record user's chatrecord, just setting option 'database.using' to 'N' in this file.
 
 ---
 
-#### **Running services**
+#### **Run services**
 
 **Run chatGPT chatbot**
 
